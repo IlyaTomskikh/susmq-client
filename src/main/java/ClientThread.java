@@ -1,33 +1,43 @@
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.net.Socket;
 import java.util.logging.Logger;
 
 public class ClientThread extends Thread implements Runnable{
-    private final BufferedReader in;
+    private final Socket socket;
+    private final DataOutputStream dos;
+    private final DataInputStream dis;
+    private String name = null;
+    private boolean isConnected = false;
     private final Logger logger = Logger.getLogger(Thread.currentThread().getName());
 
-    public ClientThread(Socket socket) throws IOException {
-        this.in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+    public ClientThread(Socket socket) {
+        this.socket = socket;
+        try {
+            this.dos = new DataOutputStream(socket.getOutputStream());
+            this.dis = new DataInputStream(socket.getInputStream());
+            this.isConnected = true;
+        } catch (IOException e) {
+            this.isConnected = false;
+            throw new RuntimeException(e);
+        }
+    }
+
+    private ClientThread() {
+        this.socket = null;
+        this.dos = null;
+        this.dis = null;
     }
 
     @Override
     public void run() {
         try {
-            while (true) {
-                var m = this.in.readLine();
-                if (m.equalsIgnoreCase("exit")) break;
-                this.logger.info(m);
-            }
-        } catch (IOException e) {
-            this.logger.info("I/O exception occurred on logging");
+        } catch () {
+            this.isConnected = false;
         } finally {
-            try {
-                this.in.close();
-            } catch (IOException e) {
-                this.logger.info("I/O exception occurred on closing");
-            }
         }
+    }
+
+    public boolean isConnected() {
+        return isConnected;
     }
 }
