@@ -12,9 +12,14 @@ public class Application {
             var client = new ClientThread(socket);
             logger.info("Connected");
             client.start();
-            while (client.isConnected());
+            while (client.isConnected()) {
+//                Thread.sleep(10);
+            }
         } catch (IOException e) {
             logger.info("I/O exception occurred on connection");
-        }
+        } /*catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }*/
+        logger.info("asasfasfsafsadf");
     }
 }
