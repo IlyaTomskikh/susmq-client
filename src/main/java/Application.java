@@ -9,16 +9,12 @@ public class Application {
         var host = "localhost";
         logger.info("Connecting...");
         try (var socket = new Socket(host, port)){
-            var client = new ClientThread(socket);
+            var client = new ClientProducer(socket);
             logger.info("Connected");
             client.start();
-            while (client.isConnected()) {
-//                Thread.sleep(10);
-            }
+            while (client.isConnected()) {}
         } catch (IOException e) {
             logger.info("I/O exception occurred on connection");
-        } /*catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }*/
+        }
     }
 }

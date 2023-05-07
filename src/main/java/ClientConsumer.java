@@ -3,7 +3,7 @@ import java.net.Socket;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Logger;
 
-public class ClientThread extends Thread implements Runnable{
+public class ClientConsumer extends Thread implements Runnable {
     private final Socket socket;
     private final DataOutputStream dos;
     private final DataInputStream dis;
@@ -11,7 +11,7 @@ public class ClientThread extends Thread implements Runnable{
     private final AtomicBoolean isConnected = new AtomicBoolean();
     private final Logger logger = Logger.getLogger(Thread.currentThread().getName());
 
-    public ClientThread(Socket socket) {
+    public ClientConsumer(Socket socket) {
         this.socket = socket;
         try {
             this.dos = new DataOutputStream(socket.getOutputStream());
@@ -23,7 +23,7 @@ public class ClientThread extends Thread implements Runnable{
         }
     }
 
-    private ClientThread() {
+    private ClientConsumer() {
         this.socket = null;
         this.dos = null;
         this.dis = null;
@@ -31,28 +31,16 @@ public class ClientThread extends Thread implements Runnable{
 
     @Override
     public void run() {
-        var br = new BufferedReader(new InputStreamReader(System.in));
         try {
-//            if (br.ready()) {
-                this.logger.info("Enter the client's name");
-                this.name = br.readLine();
-                this.dos.writeUTF(this.name);
-                this.dos.flush();
-                this.logger.info("Enter the message");
-                var input = br.readLine();
-                while (!input.equals("exit")) {
-                    Thread.sleep(10);
-                    this.dos.writeUTF(this.name + " says " + input);
-                    this.dos.flush();
-                    this.logger.info("Enter the message");
-                    input = br.readLine();
-                }
-//            }
+            while (true) {
+                if (this.dis.read() > -1) logger.info(this.dis.readUTF());
+                Thread.sleep(10);
+            }
         } catch (IOException | InterruptedException e) {
             this.isConnected.set(false);
             throw new RuntimeException(e);
         }
-        this.isConnected.set(false);
+//        this.isConnected.set(false);
     }
 
     public boolean isConnected() {
