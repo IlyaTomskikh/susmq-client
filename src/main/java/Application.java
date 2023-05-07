@@ -20,6 +20,5 @@ public class Application {
         } /*catch (InterruptedException e) {
             throw new RuntimeException(e);
         }*/
-        logger.info("asasfasfsafsadf");
     }
 }

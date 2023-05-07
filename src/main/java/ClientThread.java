@@ -42,7 +42,7 @@ public class ClientThread extends Thread implements Runnable{
                 var input = br.readLine();
                 while (!input.equals("exit")) {
                     Thread.sleep(10);
-                    this.dos.writeUTF(input);
+                    this.dos.writeUTF(this.name + " says " + input);
                     this.dos.flush();
                     this.logger.info("Enter the message");
                     input = br.readLine();
