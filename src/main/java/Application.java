@@ -12,7 +12,7 @@ public class Application {
             var client = new ClientProducer(socket);
             logger.info("Connected");
             client.start();
-            while (client.isConnected()) {}
+            while (client.isConnected());
         } catch (IOException e) {
             logger.info("I/O exception occurred on connection");
         }
