@@ -1,5 +1,7 @@
 import java.io.*;
 import java.net.Socket;
+import java.nio.charset.StandardCharsets;
+import java.util.Random;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Logger;
 
@@ -32,8 +34,12 @@ public class ClientConsumer extends Thread implements Runnable {
     @Override
     public void run() {
         try {
+            var array = new byte[7];
+            new Random().nextBytes(array);
+            name = new String(array, StandardCharsets.UTF_8);
             while (true) {
-                if (this.dis.read() > -1) logger.info(this.dis.readUTF());
+                var msg = this.dis.readUTF();
+                this.logger.info("Consumer [" + name + "] got: " + msg);
                 Thread.sleep(10);
             }
         } catch (IOException | InterruptedException e) {
